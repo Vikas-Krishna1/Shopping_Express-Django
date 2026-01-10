@@ -1,0 +1,153 @@
+{% extends 'items/base.html' %}
+
+{% block content %}
+
+<style>
+    .page {
+        max-width: 1200px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+
+    .controls form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    img {
+        width: 40px;
+        height: auto;
+    }
+
+    .cart-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .cart-summary {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="page">
+
+    <h2>Items</h2>
+
+    <!-- ===== SORT + SEARCH ===== -->
+    <div class="controls">
+        <form method="get">
+            <label class="mb-0">Sort by:</label>
+            <select name="sort_by" class="form-control form-control-sm">
+                <option value="">-- Normal Order --</option>
+                <option value="name">Name A → Z</option>
+                <option value="-name">Name Z → A</option>
+                <option value="price">Price Low → High</option>
+                <option value="-price">Price High → Low</option>
+            </select>
+
+            <input type="text" name="q" placeholder="Search items"
+                   class="form-control form-control-sm">
+
+            <button type="submit" class="btn btn-primary btn-sm">
+                Apply
+            </button>
+        </form>
+    </div>
+
+    <!-- ===== ITEMS TABLE ===== -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Price</th>
+
+                <th>Quantity</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+                <td>
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>${{ item.price }}</td>
+                <td>
+                    <select class="form-control form-control-sm">
+                        {% for i in item.qty_choices %}
+                            <option value="{{ forloop.counter0 }}">
+                                {{ forloop.counter0 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <input type="checkbox">
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No items found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ===== CART ===== -->
+    <div class="cart-actions">
+
+        <button class="btn btn-success btn-sm">Add to Cart</button>
+        <button class="btn btn-warning btn-sm">Clear Cart</button>
+        <button class="btn btn-danger btn-sm">Remove Selected</button>
+    </div>
+
+    <div class="cart-summary">
+        Total: $0.00
+    </div>
+
+    <button class="btn btn-primary">Checkout</button>
+
+</div>
+
+{% endblock %}
