@@ -1,14 +1,16 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 app_name = "items"
 
 urlpatterns = [
     ##CUSTOMER
-    path("items/", views.items_list, name="items_list"),
+    path("", views.items_list, name="items_list"),
     path("search/", views.search_items, name="search"),
     path("sort/", views.sort_items, name="sort"),
     
+    
+
 
     ##EMPLOYEE
      path("employee/inventory/", views.employee_inventory, name="inventory"),

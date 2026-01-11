@@ -1,15 +1,23 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Item
+from cart.models import CartItem
 
-
+###_____________________ Customer views ###_______________________________________________
 @login_required
 def items_list(request):
     items = Item.objects.all()
-    for item in items:
-        item.qty_choices = range(0, item.stock + 1)
 
-    
+    # Get current user's cart
+    cart_items = CartItem.objects.filter(user=request.user)
+    cart_dict = {ci.item.id: ci.quantity for ci in cart_items}
+
+    for item in items:
+        # Adjust qty_choices by subtracting cart quantity
+        already_in_cart = cart_dict.get(item.id, 0)
+        max_available = max(item.stock - already_in_cart, 0)
+        item.qty_choices = range(0, max_available + 1)  # inclusive of max_available
+
     # Search
     query = request.GET.get("q")
     if query:
@@ -20,7 +28,19 @@ def items_list(request):
     if sort_by in ["name", "-name", "price", "-price"]:
         items = items.order_by(sort_by)
 
-    return render(request, "items/items_list.html", {"items": items})
+    # Cart summary
+    cart_total = sum(ci.item.price * ci.quantity for ci in cart_items)
+
+    return render(
+        request,
+        "items/items_list.html",
+        {
+            "items": items,
+            "cart_items": cart_items,
+            "cart_total": cart_total,
+        },
+    )
+
 
 
 
@@ -70,6 +90,9 @@ def employee_inventory(request):
     items = Item.objects.all().order_by("name")
     return render(request, "items/employee_inventory.html", {"items": items})
 
+
+
+###_____________________ Employee views ###_______________________________________________
 
 @user_passes_test(is_employee)
 def add_item(request):

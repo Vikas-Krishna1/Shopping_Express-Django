@@ -11,6 +11,9 @@ class CartItem(models.Model):
      item = models.ForeignKey(Item, on_delete=models.CASCADE)
      quantity = models.PositiveIntegerField()
 
+     def __str__(self):
+        return f"{self.user} - {self.item}"
+
 class Meta:
     unique_together = ('user', 'item')
 

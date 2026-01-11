@@ -27,6 +27,9 @@ urlpatterns = [
 
     ##ITEMS
    path("items/", include("items.urls")),
+    path("cart/", include("cart.urls")),
+    
+   
   
 
     

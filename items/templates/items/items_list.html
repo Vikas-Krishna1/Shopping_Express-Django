@@ -1,4 +1,5 @@
 {% extends 'items/base.html' %}
+{% load cart_extras %}
 
 {% block content %}
 
@@ -88,6 +89,10 @@
     </div>
 
     <!-- ===== ITEMS TABLE ===== -->
+     
+<form method="post" action="{% url 'cart:cart_action' %}">
+    {% csrf_token %}
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -95,7 +100,6 @@
                 <th>Name</th>
                 <th>Image</th>
                 <th>Price</th>
-
                 <th>Quantity</th>
                 <th>Select</th>
             </tr>
@@ -114,16 +118,14 @@
                 </td>
                 <td>${{ item.price }}</td>
                 <td>
-                    <select class="form-control form-control-sm">
+                    <select name="quantity_{{ item.id }}" class="form-control form-control-sm">
                         {% for i in item.qty_choices %}
-                            <option value="{{ forloop.counter0 }}">
-                                {{ forloop.counter0 }}
-                            </option>
+                            <option value="{{ i }}">{{ i }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
-                    <input type="checkbox">
+                    <input type="checkbox" name="selected_items" value="{{ item.id }}">
                 </td>
             </tr>
             {% empty %}
@@ -134,17 +136,51 @@
         </tbody>
     </table>
 
-    <!-- ===== CART ===== -->
     <div class="cart-actions">
-
-        <button class="btn btn-success btn-sm">Add to Cart</button>
-        <button class="btn btn-warning btn-sm">Clear Cart</button>
-        <button class="btn btn-danger btn-sm">Remove Selected</button>
+        <button type="submit" name="action" value="add" class="btn btn-success btn-sm">Add to Cart</button>
+        <button type="submit" name="action" value="clear" class="btn btn-warning btn-sm">Clear Cart</button>
+        <button type="submit" name="action" value="remove" class="btn btn-danger btn-sm">Remove Selected</button>
     </div>
+</form>
+<!-- ===== CART SUMMARY ===== -->
+{% if cart_items %}
+<div class="cart-summary-section mt-4">
+    <h5>Your Cart:</h5>
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ci in cart_items %}
+            <tr>
+                <td>{{ ci.item.name }}</td>
+                <td>${{ ci.item.price|floatformat:2 }}</td>
+                <td>{{ ci.quantity }}</td>
+                <td>${{ ci.item.price|multiply:ci.quantity|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted mt-3">Your cart is empty.</p>
+{% endif %}
+
+<div class="cart-summary mt-2">
+    <strong>Total: ${{ cart_total|floatformat:2 }}</strong>
+</div>
+
 
     <div class="cart-summary">
         Total: $0.00
+         
     </div>
+
 
     <button class="btn btn-primary">Checkout</button>
 
