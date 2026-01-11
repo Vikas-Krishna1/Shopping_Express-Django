@@ -18,34 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 from items import views
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("",views.home,name="home"),
 
     ##AUTHENTICATION
+    path('accounts/', include('django.contrib.auth.urls')),
+    path("signup/", views.signupuser , name="signupuser"),
+    path("logout/", views.logoutuser , name="logoutuser"),
+     path("login/", views.loginuser , name="loginuser"),
 
     ##ITEMS
-   path("items/", include("items.urls")),
-    path("cart/", include("cart.urls")),
-    
-   
-  
-
-    
-
-
-    ##ORDERS
+    path('items/', include('items.urls')),
 
     ##CART
-    ##path("addToCart/", views.add_to_cart, name="add_to_cart"),
-
-    ##EMPOYEE
-    path('is_employee/<int:user_id>/', views.is_employee, name='is_employee'),
-    path('employee/inventory', views.employee_inventory, name='employee_inventory'),
-
+    path('cart/', include('cart.urls')),
 ]
-
-
-
-

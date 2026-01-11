@@ -1,9 +1,12 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <title>Shopping Express</title>
 
@@ -13,96 +16,132 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
-    >
+    />
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 
+    {% if item %}
+    <script>
+      $(document).ready(function () {
+        const $qty = $("input[name='quantity_{{ item.id }}']:checked");
+        const $select = $(".selected_items_{{ item.id }}");
 
-</head>
-<body class="bg-light">
-
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-
+        if ($qty.length > 0) {
+          alert("{{ item.name }} is already in the cart.");
+          $select.val($qty.val());
+        } else {
+          $select.val(0);
+        }
+      });
+    </script>
+    {% endif %}
+  </head>
+  <body class="bg-light">
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand font-weight-bold" href="/items/items">
-            Shopping Express
+        {% if user.is_authenticated %}
+        <a class="navbar-brand font-weight-bold" href="{% url 'items:items_list' %}">
+          Shopping Express
         </a>
+        {% else %}
+        <a class="navbar-brand font-weight-bold" href="{% url 'home' %}">
+          Shopping Express
+        </a>
+        {% endif %}
 
         <!-- Mobile toggle -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarNav" aria-controls="navbarNav"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Nav links -->
         <div class="collapse navbar-collapse" id="navbarNav">
+          <!-- Left side -->
+          <ul class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'items:items_list' %}">Items</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                >Orders</a
+              >
+            </li>
+            {% endif %}
+          </ul>
 
-            <!-- Left side -->
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'items:items_list' %}">Items</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Cart</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Orders</a>
-                </li>
-            </ul>
-
-            <!-- Right side -->
-            <ul class="navbar-nav ml-auto">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="navbar-text mr-3">
-                            Welcome, {{ user.username }}
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light btn-sm" href="#">
-                            Logout
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item mr-2">
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">
-                            Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-warning btn-sm" href="{% url 'register' %}">
-                            Sign Up
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-
+          <!-- Right side -->
+          <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="navbar-text mr-3">
+                Welcome, {{ user.username }}
+              </span>
+            </li>
+            <li class="nav-item">
+              <a
+                class="btn btn-outline-light btn-sm"
+                href="{% url 'logoutuser' %}"
+              >
+                Logout
+              </a>
+            </li>
+            {% else %}
+            <li class="nav-item mr-2">
+              <a
+                class="btn btn-outline-light btn-sm"
+                href="{% url 'loginuser' %}"
+              >
+                Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-warning btn-sm" href="{% url 'signupuser' %}">
+                Sign Up
+              </a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<!-- ===== MAIN CONTENT ===== -->
-<div class="container mt-4">
-    {% block content %}
-    {% endblock %}
-</div>
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container mt-4">{% block content %} {% endblock %}</div>
 
-<!-- ===== FOOTER (optional but scalable) ===== -->
-<footer class="text-center text-muted mt-5 mb-3">
-    © {{ now|date:"Y" }} Shopping Express
-</footer>
+    <!-- ===== FOOTER (optional but scalable) ===== -->
+    <footer class="text-center text-muted mt-5 mb-3">
+      © {{ now|date:"Y" }} Shopping Express
+    </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-
-</body>
+    <!-- Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
