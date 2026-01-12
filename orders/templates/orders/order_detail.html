@@ -1,0 +1,40 @@
+{% extends "items/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Order #{{ order.id }}</h2>
+    <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+    <p><strong>Status:</strong> {{ order.status|capfirst }}</p>
+    <p><strong>Total:</strong> ${{ order.total|floatformat:2 }}</p>
+
+    <h4 class="mt-4">Items in this order:</h4>
+    {% if order.items.all %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.item.name }}</td>
+                <td>${{ item.price|floatformat:2 }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.subtotal|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No items found in this order.</p>
+    {% endif %}
+
+    <a href="{% url 'orders:order-list' %}" class="btn btn-secondary mt-3">Back to Orders</a>
+</div>
+{% endblock %}

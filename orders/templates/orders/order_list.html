@@ -1,0 +1,46 @@
+{% extends "items/base.html" %}
+{% block content %}
+
+<h2 class="mb-4">My Orders</h2>
+
+{% if orders %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Total</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.id }}</td>
+      <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+      <td>
+        <span class="badge badge-info">
+          {{ order.status|capfirst }}
+        </span>
+      </td>
+      <td>${{ order.total }}</td>
+      <td>
+        <a
+          href="{% url 'orders:detail' order.id %}"
+          class="btn btn-sm btn-outline-primary"
+        >
+          View
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-secondary">
+  You have not placed any orders yet.
+</div>
+{% endif %}
+
+{% endblock %}

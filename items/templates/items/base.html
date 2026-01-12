@@ -18,23 +18,9 @@
       crossorigin="anonymous"
     />
     <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
 
-    {% if item %}
-    <script>
-      $(document).ready(function () {
-        const $qty = $("input[name='quantity_{{ item.id }}']:checked");
-        const $select = $(".selected_items_{{ item.id }}");
-
-        if ($qty.length > 0) {
-          alert("{{ item.name }} is already in the cart.");
-          $select.val($qty.val());
-        } else {
-          $select.val(0);
-        }
-      });
-    </script>
-    {% endif %}
+  
   </head>
   <body class="bg-light">
     <!-- ===== NAVBAR ===== -->
@@ -73,12 +59,7 @@
               <a class="nav-link" href="{% url 'items:items_list' %}">Items</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Cart</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"
-                >Orders</a
-              >
+              <a class="nav-link" href="{% url 'orders:order-list' %}">Orders</a>
             </li>
             {% endif %}
           </ul>

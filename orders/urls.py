@@ -16,25 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from items import views
+from orders import views
+
+app_name = "orders"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("",views.home,name="home"),
-
-    ##AUTHENTICATION
-    path('accounts/', include('django.contrib.auth.urls')),
-    path("signup/", views.signupuser , name="signupuser"),
-    path("logout/", views.logoutuser , name="logoutuser"),
-     path("login/", views.loginuser , name="loginuser"),
-
-    ##ITEMS
-    path('items/', include('items.urls')),
-
-    ##CART
-    path('cart/', include('cart.urls')),
-    
-
-    ##ORDER
-    path('order/',include('orders.urls')),
+    path("checkout/", views.checkout, name="checkout"),
+    path("",views.order_list,name="order-list"),
+    path("<int:order_id>/", views.order_detail, name="detail"),
 ]
