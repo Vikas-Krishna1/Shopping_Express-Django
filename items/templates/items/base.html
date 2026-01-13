@@ -28,12 +28,12 @@
       <div class="container">
         <!-- Brand -->
         {% if user.is_authenticated %}
-        <a class="navbar-brand font-weight-bold" href="{% url 'items:items_list' %}">
+        <a class="navbar-brand font-weight-bold" href="{% url 'home' %}">
           Shopping Express
         </a>
         {% else %}
         <a class="navbar-brand font-weight-bold" href="{% url 'home' %}">
-          Shopping Express
+          Shopping Express 
         </a>
         {% endif %}
 
@@ -57,6 +57,9 @@
             {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'items:items_list' %}">Items</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cart:cart_list' %}">Cart</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'orders:order-list' %}">Orders</a>

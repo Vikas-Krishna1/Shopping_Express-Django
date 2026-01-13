@@ -1,0 +1,40 @@
+{% extends "items/base.html" %}
+{% load cart_extras %}
+
+
+{% block content %}
+<div class="page">
+    <h2>Your Cart</h2>
+
+    {% if cart_items %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ci in cart_items %}
+            <tr>
+                <td>{{ ci.item.name }}</td>
+                <td>${{ ci.item.price|floatformat:2 }}</td>
+                <td>{{ ci.quantity }}</td>
+                <td>${{ ci.item.price|multiply:ci.quantity|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="cart-summary mt-2">
+        <strong>Total: ${{ cart_total|floatformat:2 }}</strong>
+    </div>
+
+    <a href="{% url 'orders:checkout' %}" class="btn btn-primary mt-3">Checkout</a>
+    {% else %}
+    <p class="text-muted mt-3">Your cart is empty.</p>
+    {% endif %}
+</div>
+{% endblock %}

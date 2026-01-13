@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from items.models import Item
 from .models import CartItem
@@ -41,4 +41,16 @@ def cart_action(request):
                 cart_item.save()
 
         return redirect("items:items_list")
+    
+def cart_list(request):
+    cart_items = CartItem.objects.select_related("item").filter(user=request.user)
+    total_price = sum(ci.item.price * ci.quantity for ci in cart_items)
 
+    return render(
+        request,
+        "cart/cart-list.html",
+        {
+            "cart_items": cart_items,
+            "total_price": total_price,
+        }
+    )
