@@ -1,0 +1,26 @@
+{% extends "employee/base.html" %}
+
+{% block content %}
+<h2>Inventory</h2>
+
+<table>
+    <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+        <td>{{ item.name }}</td>
+        <td>${{ item.price }}</td>
+        <td>{{ item.stock }}</td>
+        <td>
+            <a href="#">Edit</a> |
+            <a href="#">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

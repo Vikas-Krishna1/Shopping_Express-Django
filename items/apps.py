@@ -6,4 +6,5 @@ class ItemsConfig(AppConfig):
 
     def ready(self):
         import items.signals
+        
 

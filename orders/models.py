@@ -10,7 +10,7 @@ class Order(models.Model):
         max_length=20,
         choices=[
             ("pending", "Pending"),
-            ("paid", "Paid"),
+            ("completed", "Completed"),
             ("cancelled", "Cancelled"),
         ],
         default="pending",

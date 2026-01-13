@@ -10,5 +10,5 @@ admin.site.register(OrderItem)
 admin.site.register(CartItem)
 admin.site.register(Item)
 admin.site.register(Profile)
-admin.site.register(Adress)
+admin.site.register(Address)
 

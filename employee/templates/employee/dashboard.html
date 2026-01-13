@@ -1,0 +1,10 @@
+{% extends "employee/base.html" %}
+
+{% block content %}
+<h2>Employee Dashboard</h2>
+
+<ul>
+    <li><a href="{% url 'employee:orders' %}">View Pending Orders</a></li>
+    <li><a href="{% url 'employee:inventory' %}">Manage Inventory</a></li>
+</ul>
+{% endblock %}

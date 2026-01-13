@@ -8,6 +8,7 @@ from cart.models import CartItem
 from django.contrib.auth.models import User
 
 
+
 def home(request):
     return render(request,"items/home.html")
 
@@ -22,16 +23,22 @@ def signupuser(request):
             })
 
         try:
+            # Create user
             user = User.objects.create_user(
                 username=request.POST["username"],
                 password=request.POST["password1"],
             )
 
-            # CREATE PROFILE HERE
-            user.profile.user_type = request.POST["role"]
+            # Set role
+            role = request.POST.get("role", "CUSTOMER")
+            user.profile.user_type = role
             user.profile.save()
 
             login(request, user)
+
+            # Redirect based on role
+            if role == "EMPLOYEE":
+                return redirect("employee:dashboard")
             return redirect("items:items_list")
 
         except IntegrityError:
@@ -43,7 +50,7 @@ def signupuser(request):
     return render(request, "items/signupuser.html", {
         "form": UserCreationForm()
     })
-         
+
 
 ##_____________________ Login/logout views ###_______________________________________________
 def logoutuser(request):
@@ -65,13 +72,17 @@ def loginuser(request):
             })
 
         login(request, user)
+
+        # ROLE-BASED REDIRECT
+        if hasattr(user, "profile") and user.profile.user_type == "employee":
+            return redirect("employee:dashboard")
+
         return redirect("items:items_list")
 
     return render(request, "items/loginuser.html", {
         "form": AuthenticationForm()
     })
 
-    
 
 
 
@@ -147,58 +158,3 @@ def sort_items(request):
 
 
 
-###_____________________ Employee views ###_______________________________________________
-
-
-def is_employee(user):
-    return (
-        user.is_authenticated
-        and hasattr(user, "profile")
-        and user.profile.user_type == "employee"
-    )
-
-
-@user_passes_test(is_employee)
-def employee_inventory(request):
-    items = Item.objects.all().order_by("name")
-    return render(request, "items/employee_inventory.html", {"items": items})
-
-
-
-###_____________________ Employee views ###_______________________________________________
-
-@user_passes_test(is_employee)
-def add_item(request):
-    if request.method == "POST":
-        Item.objects.create(
-            name=request.POST["name"],
-            price=request.POST["price"],
-            stock=request.POST["stock"],
-            image=request.FILES.get("image"),
-        )
-        return redirect("items:inventory")
-
-    return render(request, "items/add_item.html")
-
-
-@user_passes_test(is_employee)
-def update_item(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
-
-    if request.method == "POST":
-        item.price = request.POST.get("price", item.price)
-        item.stock = request.POST.get("stock", item.stock)
-        if "image" in request.FILES:
-            item.image = request.FILES["image"]
-        item.save()
-
-        return redirect("items:inventory")
-
-    return render(request, "items/update_item.html", {"item": item})
-
-
-@user_passes_test(is_employee)
-def delete_item(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
-    item.delete()
-    return redirect("items:inventory")

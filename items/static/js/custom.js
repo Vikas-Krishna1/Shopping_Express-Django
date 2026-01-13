@@ -1,5 +1,5 @@
 $(document).ready(function () {
-   $(document).on("change", 'select[name^="quantity_"]', function () {
+  $(document).on("change", 'select[name^="quantity_"]', function () {
     const qty = Number($(this).val());
 
     // extract item id from name="quantity_12"
@@ -64,7 +64,12 @@ $(document).ready(function () {
   });
 
   // Re-evaluate Clear button after page changes
-  $(document).on("change", "select[name^='quantity_'], input[name='selected_items']", function () {
-    updateClearButton();
-  });
+  $(document).on(
+    "change",
+    "select[name^='quantity_'], input[name='selected_items']",
+    function () {
+      updateClearButton();
+    }
+  );
 });
+
